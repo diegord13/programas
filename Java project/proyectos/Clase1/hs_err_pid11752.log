@@ -1,0 +1,131 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 2784336 bytes for Chunk::new
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (./src/hotspot/share/memory/arena.cpp:197), pid=11752, tid=10580
+#
+# JRE version: OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (11.0.11+9) (build 11.0.11+9)
+# Java VM: OpenJDK 64-Bit Server VM AdoptOpenJDK-11.0.11+9 (11.0.11+9, mixed mode, tiered, compressed oops, parallel gc, windows-amd64)
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: --add-modules=ALL-SYSTEM --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -Declipse.application=org.eclipse.jdt.ls.core.id1 -Dosgi.bundles.defaultStartLevel=4 -Declipse.product=org.eclipse.jdt.ls.core.product -Dfile.encoding=utf8 -DwatchParentProcess=false -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Xverify:none c:\Users\Diego\.vscode\extensions\redhat.java-0.80.0\server\plugins\org.eclipse.equinox.launcher_1.6.200.v20210416-2027.jar -configuration c:\Users\Diego\AppData\Roaming\Code\User\globalStorage\redhat.java\0.80.0\config_win -data c:\Users\Diego\AppData\Roaming\Code\User\workspaceStorage\93b65696971e4a7074be42f4d020c250-1\redhat.java\jdt_ws
+
+Host: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz, 4 cores, 7G,  Windows 10 , 64 bit Build 19041 (10.0.19041.1023)
+Time: Sat Jul 10 18:05:35 2021 Hora est. Pacífico, Sudamérica elapsed time: 115.796985 seconds (0d 0h 1m 55s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000002fae645e800):  JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=10580, stack(0x000000fbb2900000,0x000000fbb2a00000)]
+
+
+Current CompileTask:
+C2: 117624 6911   !   4       org.eclipse.jdt.internal.core.search.indexing.BinaryIndexer::indexDocument (1144 bytes)
+
+Stack: [0x000000fbb2900000,0x000000fbb2a00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x5f7e5a]
+V  [jvm.dll+0x77ff2e]
+V  [jvm.dll+0x7815ff]
+V  [jvm.dll+0x781cc3]
+V  [jvm.dll+0x247408]
+V  [jvm.dll+0xbe69c]
+V  [jvm.dll+0xbed9c]
+V  [jvm.dll+0x34cb47]
+V  [jvm.dll+0x1990e9]
+V  [jvm.dll+0x200e92]
+V  [jvm.dll+0x1fff6f]
+V  [jvm.dll+0x184f1c]
+V  [jvm.dll+0x20f3e7]
+V  [jvm.dll+0x20d5cb]
+V  [jvm.dll+0x7442f9]
+V  [jvm.dll+0x73d364]
+V  [jvm.dll+0x5f6cd6]
+C  [ucrtbase.dll+0x21bb2]
+C  [KERNEL32.DLL+0x17034]
+C  [ntdll.dll+0x52651]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x000002faed4ca8c0, length=25, elements={
+0x000002facc394000, 0x000002fae6442000, 0x000002fae6443000, 0x000002fae7602800,
+0x000002fae645c800, 0x000002fae645d800, 0x000002fae645e800, 0x000002fae6460800,
+0x000002fae7625000, 0x000002fae771f000, 0x000002fae7c0a000, 0x000002fae7d0c800,
+0x000002fae7d0d800, 0x000002fae8067800, 0x000002fae7d04000, 0x000002fae7f28800,
+0x000002fae77dd800, 0x000002fae7d7a800, 0x000002fae7d7f800, 0x000002fae7d7e800,
+0x000002fae7d81000, 0x000002fae7d7b800, 0x000002fae7d7e000, 0x000002faee113800,
+0x000002faee114000
+}
+
+Java Threads: ( => current thread )
+  0x000002facc394000 JavaThread "main" [_thread_blocked, id=3148, stack(0x000000fbb2100000,0x000000fbb2200000)]
+  0x000002fae6442000 JavaThread "Reference Handler" daemon [_thread_blocked, id=16616, stack(0x000000fbb2400000,0x000000fbb2500000)]
+  0x000002fae6443000 JavaThread "Finalizer" daemon [_thread_blocked, id=14108, stack(0x000000fbb2500000,0x000000fbb2600000)]
+  0x000002fae7602800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=4380, stack(0x000000fbb2600000,0x000000fbb2700000)]
+  0x000002fae645c800 JavaThread "Attach Listener" daemon [_thread_blocked, id=16568, stack(0x000000fbb2700000,0x000000fbb2800000)]
+  0x000002fae645d800 JavaThread "Service Thread" daemon [_thread_blocked, id=13008, stack(0x000000fbb2800000,0x000000fbb2900000)]
+=>0x000002fae645e800 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=10580, stack(0x000000fbb2900000,0x000000fbb2a00000)]
+  0x000002fae6460800 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=14056, stack(0x000000fbb2a00000,0x000000fbb2b00000)]
+  0x000002fae7625000 JavaThread "Sweeper thread" daemon [_thread_blocked, id=17936, stack(0x000000fbb2b00000,0x000000fbb2c00000)]
+  0x000002fae771f000 JavaThread "Common-Cleaner" daemon [_thread_blocked, id=5288, stack(0x000000fbb2c00000,0x000000fbb2d00000)]
+  0x000002fae7c0a000 JavaThread "Active Thread: Equinox Container: 9f7d530f-0f3d-46ff-82ca-b2c679832203" [_thread_blocked, id=5400, stack(0x000000fbb2e00000,0x000000fbb2f00000)]
+  0x000002fae7d0c800 JavaThread "Framework Event Dispatcher: Equinox Container: 9f7d530f-0f3d-46ff-82ca-b2c679832203" daemon [_thread_blocked, id=18316, stack(0x000000fbb2f00000,0x000000fbb3000000)]
+  0x000002fae7d0d800 JavaThread "Start Level: Equinox Container: 9f7d530f-0f3d-46ff-82ca-b2c679832203" daemon [_thread_blocked, id=9360, stack(0x000000fbb3000000,0x000000fbb3100000)]
+  0x000002fae8067800 JavaThread "SCR Component Actor" daemon [_thread_blocked, id=11812, stack(0x000000fbb3400000,0x000000fbb3500000)]
+  0x000002fae7d04000 JavaThread "Bundle File Closer" daemon [_thread_blocked, id=10080, stack(0x000000fbb3600000,0x000000fbb3700000)]
+  0x000002fae7f28800 JavaThread "Worker-JM" [_thread_blocked, id=16536, stack(0x000000fbb3700000,0x000000fbb3800000)]
+  0x000002fae77dd800 JavaThread "Worker-1" [_thread_blocked, id=4696, stack(0x000000fbb3900000,0x000000fbb3a00000)]
+  0x000002fae7d7a800 JavaThread "Java indexing" daemon [_thread_in_Java, id=13756, stack(0x000000fbb3a00000,0x000000fbb3b00000)]
+  0x000002fae7d7f800 JavaThread "logback configurator timer" daemon [_thread_blocked, id=10576, stack(0x000000fbb3b00000,0x000000fbb3c00000)]
+  0x000002fae7d7e800 JavaThread "pool-2-thread-1" [_thread_in_native, id=12396, stack(0x000000fbb3e00000,0x000000fbb3f00000)]
+  0x000002fae7d81000 JavaThread "Worker-4: Java indexing... " [_thread_blocked, id=16992, stack(0x000000fbb4100000,0x000000fbb4200000)]
+  0x000002fae7d7b800 JavaThread "ForkJoinPool.commonPool-worker-3" daemon [_thread_blocked, id=14760, stack(0x000000fbb4200000,0x000000fbb4300000)]
+  0x000002fae7d7e000 JavaThread "ForkJoinPool.commonPool-worker-5" daemon [_thread_blocked, id=4896, stack(0x000000fbb4400000,0x000000fbb4500000)]
+  0x000002faee113800 JavaThread "Worker-6" [_thread_blocked, id=16784, stack(0x000000fbb4300000,0x000000fbb4400000)]
+  0x000002faee114000 Thread [stack: 0x000000fbb2000000,0x000000fbb2100000] [id=11292]
+
+Other Threads:
+  0x000002fae643f800 VMThread "VM Thread" [stack: 0x000000fbb2300000,0x000000fbb2400000] [id=12736]
+  0x000002fae7843800 WatcherThread [stack: 0x000000fbb2d00000,0x000000fbb2e00000] [id=8552]
+  0x000002facc3ac000 GCTaskThread "ParGC Thread#0" [stack: 0x000000fbb2200000,0x000000fbb2300000] [id=11620]
+  0x000002fae7ea2800 GCTaskThread "ParGC Thread#1" [stack: 0x000000fbb3100000,0x000000fbb3200000] [id=11196]
+  0x000002fae7ea3000 GCTaskThread "ParGC Thread#2" [stack: 0x000000fbb3200000,0x000000fbb3300000] [id=17556]
+  0x000002fae7ea4000 GCTaskThread "ParGC Thread#3" [stack: 0x000000fbb3300000,0x000000fbb3400000] [id=18364]
+
+Threads with active compile tasks:
+C2 CompilerThread0 192325 6911   !   4       org.eclipse.jdt.internal.core.search.indexing.BinaryIndexer::indexDocument (1144 bytes)
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap address: 0x00000000c0000000, size: 1024 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
+Heap:
+ PSYoungGen      total 2560K, used 1618K [0x00000000eab00000, 0x00000000eae80000, 0x0000000100000000)
+  eden space 2048K, 99% used [0x00000000eab00000,0x00000000eabda5e0,0x00000000ead00000)
+  from space 512K, 95% used [0x00000000ead80000,0x00000000eadfa8e0,0x00000000eae00000)
+  to   space 512K, 0% used [0x00000000eae00000,0x00000000eae00000,0x00000000eae80000)
+ ParOldGen      
