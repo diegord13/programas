@@ -1,0 +1,118 @@
+import pandas as pd
+import boto3
+from io import StringIO
+import StaticValsDev
+from sqlalchemy import create_engine
+from datetime import datetime, timedelta
+
+now = datetime.now()
+date = now.date() - timedelta(days=1)
+# convert to string
+date = date.strftime("%m/%d/%Y")
+date = date + ' 0:00'
+
+def read_logs(filename, client):
+    object_key = filename
+    csv_obj = client.get_object(Bucket=StaticValsDev.BUCKET_NAME, Key=object_key)
+    body = csv_obj['Body']
+    csv_string = body.read().decode('utf-8')
+    df = pd.read_csv(StringIO(csv_string))
+    return df
+
+def get_file_list_s3(prefix, file_extension):
+    s3 = boto3.resource('s3', aws_access_key_id=StaticValsDev.AWS_ID,
+                        aws_secret_access_key=StaticValsDev.AWS_SECRET)
+    my_bucket = s3.Bucket(StaticValsDev.BUCKET_NAME)
+    file_objs = my_bucket.objects.filter(Prefix=prefix).all()
+
+    file_names = [file_obj.key for file_obj in file_objs if
+                  file_extension is not None and file_obj.key.split(".")[-1] == file_extension]
+    return file_names
+
+if __name__ == '__main__':
+
+    engine = create_engine("postgresql://" + StaticValsDev.USER + ":" + StaticValsDev.PASS + "@" + StaticValsDev.ENDPOINT + ":" + StaticValsDev.PORT + "/" + StaticValsDev.DB)
+
+    client = boto3.client('s3', aws_access_key_id=StaticValsDev.AWS_ID,
+                          aws_secret_access_key=StaticValsDev.AWS_SECRET)
+
+
+    filenames = get_file_list_s3("egress/input/prelogs", "csv")
+    data_agg_df = pd.concat([read_logs(f, client) for f in filenames])
+
+    # multi-index y label de cada dataframe
+    engine.execute("DELETE FROM one_offs.prelogs where ingestion_date = %s", (date,))
+    db_redshift = pd.read_sql("SELECT * FROM one_offs.prelogs", engine)
+
+
+    db_redshift['master'] = 'master'
+    db_redshift.set_index('master', append=True, inplace=True)
+
+    data_agg_df['daily'] = 'daily'
+    data_agg_df.set_index('daily', append=True, inplace=True)
+
+
+    data_agg_df = data_agg_df.rename(columns={'Media Outlet': 'media_outlet',
+                            'Program Title': 'program_title',
+                            'Attributes': 'attributes',
+                            'Feed': 'feed',
+                            'Length': 'length',
+                            'Ad': 'ad',
+                            'Estimated Date': 'estimated_date',
+                            'Estimated Time': 'estimated_time',
+                            'Gross Rate': 'gross_rate',
+                            'Client Net Rate': 'client_net_rate'
+                            })
+
+    db_redshift = db_redshift.rename(columns={'Media Outlet': 'media_outlet',
+                              'Program Title': 'program_title',
+                              'Attributes': 'attributes',
+                              'Feed': 'feed',
+                              'Length': 'length',
+                              'Ad': 'ad',
+                              'Estimated Date': 'estimated_date',
+                              'Estimated Time': 'estimated_time',
+                              'Gross Rate': 'gross_rate',
+                              'Client Net Rate': 'client_net_rate',
+                               'ingestion_date':'ingestion_date'
+
+                              })
+
+
+    db_redshift = db_redshift[['media_outlet', 'program_title', 'attributes', 'feed', 'length', 'ad',
+                                       'estimated_date', 'estimated_time', 'gross_rate', 'client_net_rate']]
+
+    merged = db_redshift.append(data_agg_df)
+    merged = merged.drop_duplicates().sort_index()
+    outp_df = pd.IndexSlice
+
+    merged['ingestion_date'] = merged['media_outlet']
+    merged['ingestion_date'] = now.date()
+
+    try:
+
+     df = (merged.loc[outp_df[:, 'daily'], :])
+     df.to_sql('prelogs', schema='one_offs', con=engine, index=False, if_exists='append', method='multi')
+    except KeyError as e:
+     print('No hay nuevos datos para ingresar')
+    except:
+     print('Error en la captura de datos')
+
+
+    s3 = boto3.resource('s3', aws_access_key_id=StaticValsDev.AWS_ID,
+                        aws_secret_access_key=StaticValsDev.AWS_SECRET)
+    for i in filenames:
+        print(i.split("/")[3])
+        df = read_logs(i, client)
+        copy_source = {
+            'Bucket': 'mmsi-creditsesame',
+            'Key': i
+        }
+        bucket = s3.Bucket('mmsi-creditsesame')
+        # Copying the files to another bucket
+        bucket.copy(copy_source, 'egress/input/ingested/' + i.split("/")[3])
+        s3.Object('mmsi-creditsesame', i).delete()
+
+
+
+
