@@ -1,0 +1,35 @@
+import pdfplumber
+import xlsxwriter
+pdfFileObj = pdfplumber.open('Certificado RUP Camarade CcioBogota.pdf')
+texto = ' '
+workbook = xlsxwriter.Workbook('camaraccio.xlsx')
+worksheet = workbook.add_worksheet()
+for i in range(len(pdfFileObj.pages)):
+
+    page = pdfFileObj.pages[i]
+    text = page.extract_text()
+    numConsecutivoReporte = text.find('NUMERO CONSECUTIVO')
+    valContratoEjecutado = text.find('SMMLV')
+    numConsecutivoReporte2 = text.rfind('NUMERO CONSECUTIVO')
+    valContratoEjecutado2 = text.rfind('SMMLV')
+    if numConsecutivoReporte == numConsecutivoReporte2:
+        texto += text[numConsecutivoReporte:valContratoEjecutado + 15]
+    else:
+        texto += text[numConsecutivoReporte:valContratoEjecutado + 15]
+        texto += text[numConsecutivoReporte2:valContratoEjecutado2+15]
+
+    if numConsecutivoReporte2 == -1 and valContratoEjecutado2 != -1:
+        texto += text[0:valContratoEjecutado+15]
+
+
+# worksheet.write(2, 0, texto)
+# workbook.close()
+# frame = pd.concat(li, axis=0, ignore_index=True).sort_index()
+#
+# frame.to_csv('Spend Tracker', header=True, index=False)
+
+
+fichero = open("ccio.txt","wt")
+texto_de_fichero = texto
+fichero.write(texto_de_fichero)
+fichero.close()
